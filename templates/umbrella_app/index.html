@@ -36,23 +36,30 @@
       <!-- {{ form.as_p }} -->
       <div class="field">
         <div class="control">
-          {% render_field form.Ort class="form-control" %}
+          {% render_field form.where_are_you class="form-control" %}
         </div>
       </div>
 
 
       <div class="field">
         <div class="control">
-          {% render_field form.Zeit class="form-control" style="width:100px;" %}
+          {% render_field form.at_what_time class="form-control" style="width:100px;" %}
         </div>
       </div>
 
       <input type="submit" value="Submit">
     </form>
+    <div>
+      {% if form_data %}
+      {{form_data}}
+      {% for data in form_data %}
 
-    {% if formData %}
-    {{ formData }}
-    {% endif %}
+      {{ data }}
+      {% endfor %}
+      {% endif %}
+
+    </div>
+
 
 
   </div>
