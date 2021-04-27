@@ -106,7 +106,7 @@ class LocationFormView(FormView):
             )
         else:
             error = forecast_response["error"]
-            return error, None, None, None
+            return error, None, None, None, None, None
 
 
 #####################################################################################
