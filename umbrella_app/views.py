@@ -12,7 +12,6 @@ import json
 class IndexView(TemplateView):
     template_name = "umbrella_app/index.html"
 
-
 class LocationFormView(FormView):
     template_name = "umbrella_app/index.html"
     form_class = LocationForm
