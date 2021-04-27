@@ -4,46 +4,163 @@ from django.views.generic import TemplateView, FormView
 from django.views.generic.edit import BaseFormView, TemplateResponseMixin
 from .forms import LocationForm
 
+import requests
+import json
+
+
 # Create your views here.
 class IndexView(TemplateView):
     template_name = "umbrella_app/index.html"
 
 
-class LocationFormView(FormView, TemplateResponseMixin):
+class LocationFormView(FormView):
     template_name = "umbrella_app/index.html"
     form_class = LocationForm
-    success_url = "umbrella"
 
-    def get(self, request, *args, **kwargs):
+    def form_valid(self, form):
+        context = self.get_context_data()
+        (
+            error,
+            umbrella_necessary,
+            umbrella_days,
+            pullover_necessary,
+            pullover_days,
+            current_weather,
+        ) = self.get_forecast(form)
+        context["umbrella_necessary"] = umbrella_necessary
+        context["umbrella_days"] = umbrella_days
 
-        form_view = FormView.get(self, request, *args, **kwargs)
-        form_data = form_view.context_data["form"]
+        context["pullover_necessary"] = pullover_necessary
+        context["pullover_days"] = pullover_days
+        if error == None:
+            # get the forecast  from weatherapi.com and calculate whether an umbrella is necessary
+            context["icon"] = current_weather[0]
+            context["temperature"] = current_weather[1]
+            context["temperature_felt"] = current_weather[2]
+        else:
+            context["error"] = error
 
-        unknown = form_view.context_data["form"]
-        object_methods = [
-            method_name
-            for method_name in dir(unknown)
-            if callable(getattr(unknown, method_name))
-        ]
+        return self.render_to_response(context)
 
-        print(object_methods)
-        # listView = BaseListView.get(self, request, *args, **kwargs)
-        # Uhrat_what_time = self.request.POST["at_what_time"]
-        # where_are_you = self.request.POST["where_are_you"]
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["umbrella_necessary"] = None
+        return context
 
-        # formData = {"at_what_time": Uhrat_what_time, "where_are_you": where_are_you}
-        # print(formData)
-        # listData = listView.context_data['object_list']
-        return render(request, self.template_name, {"form_data": form_data})
+    def get_forecast(self, form):
+        # retrieve data from the form
+        city = form.cleaned_data["where_you_wanna_go"]
+        number_of_days = form.cleaned_data["number_of_days"]
 
-    # def form_valid(self, form):
-    #     time = form.cleaned_data["at_what_time"]
-    #     print("form_valid---------------", self.request.POST)
-    #     return super(LocationFormView, self).form_valid(form)
+        # retrieve weather data from weatherapi.com
+        my_API_key = "191078502d13460888194125212704"
+        url = "http://api.weatherapi.com/v1/forecast.json?key={}&q={}&days={}&aqi=no&alerts=no"
+        forecast_response = requests.get(
+            url.format(my_API_key, city, number_of_days)
+        ).json()
 
-    # def get_context_data(self, form, **kwargs):
-    #     time = form.cleaned_data["at_what_time"]
-    #     context = super(LocationFormView, self).get_context_data(form,**kwargs)
-    #     print("getContext---------------", self.request.POST, time)
-    #     # print(kwargs)
-    #     return context
+        # select desired information
+        if "error" not in forecast_response.keys():
+            error = None
+            current_weather = forecast_response["current"]
+            current_weather = [
+                current_weather["condition"]["icon"],
+                int(current_weather["temp_c"]),
+                int(current_weather["feelslike_c"]),
+            ]
+            days = forecast_response["forecast"]["forecastday"]
+
+            umbrella_necessary = False
+            umbrella_days = []
+            pullover_necessary = False
+            pullover_days = []
+            for day in days:
+                if int(day["day"]["daily_chance_of_rain"]) > 50:
+                    umbrella_necessary = True
+                    umbrella_days.append(
+                        (
+                            day["date"],
+                            int(
+                                day["day"]["daily_chance_of_rain"],
+                            ),
+                        )
+                    )
+
+                if int(day["day"]["mintemp_c"]) < 15:
+                    pullover_necessary = True
+                    pullover_days.append(
+                        (
+                            day["date"],
+                            int(
+                                day["day"]["mintemp_c"],
+                            ),
+                        )
+                    )
+            return (
+                error,
+                umbrella_necessary,
+                umbrella_days,
+                pullover_necessary,
+                pullover_days,
+                current_weather,
+            )
+        else:
+            error = forecast_response["error"]
+            return error, None, None, None
+
+
+#####################################################################################
+################## API from openweathermap :
+# ################ forcast-API-key does not work,
+################## probably due to fees.
+#####################################################################################
+
+# def form_valid(self, form):
+#     context = self.get_context_data()
+#     # get the forecast  from weatherapi.com and calculate whether an umbrella is necessary
+#     umbrella_necessary, umbrella_days, current_weather = self.get_forecast(form)
+#     context["umbrella_necessary"] = umbrella_necessary
+#     context["umbrella_days"] = umbrella_days
+
+#     context["icon"] = current_weather[0]
+#     context["temperature"] = current_weather[1]
+#     context["temperature_felt"] = current_weather[2]
+
+#     # # get the forecast  from omw.com and calculate whether an umbrella is necessary
+#     # error, current_weather = self.get_weather_data_from_owm(form)
+#     # if error == False:
+#     #     for parameter in current_weather:
+#     #         context[parameter] = current_weather[parameter]
+#     # else:
+#     #     context["error"] = current_weather
+
+#     return self.render_to_response(context)
+# def get_weather_data_from_owm(self, form):
+#     city = form.cleaned_data["where_you_wanna_go"]
+#     my_API_key_current = "e9ab476fc6beabeeb04cba1097a498f5"
+#     my_API_key_forecast = "3bbf0887018d6ff4786e9436906e4ee8"
+
+#     url = (
+#         "http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid={}"
+#     )
+#     forecast_url = (
+#         "http://pro.openweathermap.org/data/2.5/forecast/hourly?q={}&appid={}"
+#     )
+
+#     response_for_current = requests.get(url.format(city, my_API_key_current)).json()
+#     response_for_forecast = requests.get(
+#         forecast_url.format(city, my_API_key_forecast)
+#     ).json()
+
+#     if response_for_current["cod"] != "404":
+#         error = False
+#         current_weather = {
+#             "temperature": int(response_for_current["main"]["temp"]),
+#             "description": response_for_current["weather"][0]["description"],
+#         }
+#     else:
+#         error = True
+#         current_weather = {
+#             "Can't retreive weather data: Invalid API key. Please see http://openweathermap.org/faq#error401 for more info."
+#         }
+#     return error, current_weather
