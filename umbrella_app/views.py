@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView, FormView
 from .forms import LocationForm
 import requests
-from .secrete import apiKey  # , DjangoSecreteKey
+from .secret import apiKey  # , DjangoSecreteKey
 
 
 class IndexView(TemplateView):
