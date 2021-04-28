@@ -1,0 +1,16 @@
+<div class="card m-3 p-3 h-auto">
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="m-3">
+                {{ form.where_you_wanna_go }}
+            </div>
+            <div class="m-3 ">
+                {{ form.number_of_days }}
+            </div>
+            <button type="submit" class="btn btn-primary m-3 p-3">
+                get the answer
+            </button>
+        </form>
+    </div>
+</div>

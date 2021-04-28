@@ -1,0 +1,30 @@
+{% if pullover_necessary %}
+<div class="card m-3" style="width: 25rem; height: auto;">
+    <div class="card-body">
+        <h2>Better bring an pullover!</h2>
+        <div class="box">
+            because on the following days minimum temperature is lower than 15°C:
+            <table class="table">
+                <thead>
+                    <th scope="col">Date</th>
+                    <th scope="col">min. Temperature</th>
+                </thead>
+                <tbody>
+                    {% for day in pullover_days%}
+                    <tr>
+                        <td>{{ day.0 }}</td>
+                        <td>{{ day.1 }} °C</td>
+                    </tr>
+                    {% endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card m-3" style="width: auto; height: auto;">
+    <div class="card-body">
+        <h2>No need for a pullover!</h2>
+    </div>
+</div>
+{% endif %}

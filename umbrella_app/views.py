@@ -1,16 +1,19 @@
-from django.forms import widgets
-from django.shortcuts import render
+# from django.forms import widgets
+# from django.shortcuts import render
 from django.views.generic import TemplateView, FormView
-from django.views.generic.edit import BaseFormView, TemplateResponseMixin
+
+# from django.views.generic.edit import BaseFormView, TemplateResponseMixin
 from .forms import LocationForm
 
 import requests
-import json
+
+# import json
 
 
 # Create your views here.
 class IndexView(TemplateView):
     template_name = "umbrella_app/index.html"
+
 
 class LocationFormView(FormView):
     template_name = "umbrella_app/index.html"
@@ -67,6 +70,7 @@ class LocationFormView(FormView):
                 int(current_weather["temp_c"]),
                 int(current_weather["feelslike_c"]),
             ]
+
             days = forecast_response["forecast"]["forecastday"]
 
             umbrella_necessary = False
@@ -84,7 +88,6 @@ class LocationFormView(FormView):
                             ),
                         )
                     )
-
                 if int(day["day"]["mintemp_c"]) < 15:
                     pullover_necessary = True
                     pullover_days.append(

@@ -1,0 +1,31 @@
+{% if umbrella_necessary %}
+<div class="card m-3" style="width: 25rem; height: auto;">
+    <div class="card-body">
+        <h2>Better bring an umbrella!</h2>
+        <div class="box">
+            because on the following days the probability for rain is higher than 50 %:
+            <table class="table">
+                <thead>
+                    <th scope="col">Date</th>
+                    <th scope="col">Probability</th>
+                </thead>
+                <tbody>
+                    {% for day in umbrella_days%}
+                    <tr>
+                        <td>{{ day.0 }}</td>
+                        <td>{{ day.1 }} %</td>
+                    </tr>
+                    {% endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="card m-3" style="width: 18rem; height: auto;">
+    <div class="card-body">
+        <h2>No need for an umbrella!</h2>
+    </div>
+</div>
+{% endif %}

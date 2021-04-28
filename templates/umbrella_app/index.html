@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-
-
 <html>
 
 <head>
@@ -14,152 +12,22 @@
 </head>
 
 <body>
-
-  <div class="container-fluid">
-    <div class="d-flex justify-content-center">
-      <div class="card-body">
-        <h3 class="mb-2 bg-primary text-white h-25 p-3 text-center">
-          do you I need to pack an umbrella or a pullover?
-        </h3>
-
-        <div class="container">
-          <div class="d-flex flex-column justify-content-center ">
-
-
-
-            <div class="card m-3 p-3" style="width: ; height: auto;">
-
-              <div class="card-body">
-
-                <form method="POST">
-                  {% csrf_token %}
-                  <div class="field has-addons">
-                    <div class="m-3">
-                      {{ form.where_you_wanna_go }}
-                    </div>
-                    <div class="m-3 ">
-                      {{ form.number_of_days }}
-                    </div>
-
-                    <button type="submit" class="btn btn-primary m-3 p-3">
-                      get the answer
-                    </button>
-
-                  </div>
-                </form>
-              </div>
-            </div>
-
-            {% if error %}
-            <div class="card m-3" style="width: 18rem; height: auto;">
-              <div class="card-body">
-                <h2 class="card-title"> Error: </h2>
-                <p> {{ error }}</p>
-              </div>
-            </div>
-            {% endif %}
-
-
-            {% if temperature is not None %}
-            <div class="d-flex align-content-center flex-wrap">
-
-
-              <div class="card m-3" style="width: 18rem; height: auto;">
-                <div class="card-body">
-
-                  <h2 class="card-title">Current Weather</h2>
-
-                  <img src=" {{ icon }} " alt="{{ icon }}">
-                  <p>Temperature (actual): {{ temperature }}°C</p>
-                  <p>Temperature (felt): {{ temperature_felt }}°C </p>
-
-                </div>
-              </div>
-
-              {% if umbrella_necessary %}
-              <div class="card m-3" style="width: 25rem; height: auto;">
-                <div class="card-body">
-                  <h2>Better bring an umbrella!</h2>
-                  <div class="box">
-                    because on the following days the probability for rain is higher than 50 %:
-                    <table class="table">
-                      <thead>
-                        <th scope="col">Date</th>
-                        <th scope="col">Probability</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for day in umbrella_days%}
-                        <tr>
-                          <td>{{ day.0 }}</td>
-                          <td>{{ day.1 }} %</td>
-                        </tr>
-
-                        {% endfor%}
-                      </tbody>
-                    </table>
-
-                  </div>
-                </div>
-              </div>
-              {% else %}
-              <div class="card m-3" style="width: 18rem; height: auto;">
-                <div class="card-body">
-                  <h2>No need for an umbrella!</h2>
-                </div>
-              </div>
-              {% endif %}
-
-              {% if pullover_necessary %}
-              <div class="card m-3" style="width: 25rem; height: auto;">
-                <div class="card-body">
-                  <h2>Better bring an pullover!</h2>
-                  <div class="box">
-                    because on the following days minimum temperature is lower than 15°C:
-                    <table class="table">
-                      <thead>
-                        <th scope="col">Date</th>
-                        <th scope="col">min. Temperature</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for day in pullover_days%}
-                        <tr>
-                          <td>{{ day.0 }}</td>
-                          <td>{{ day.1 }} °C</td>
-                        </tr>
-
-                        {% endfor%}
-                      </tbody>
-                    </table>
-
-                  </div>
-                </div>
-              </div>
-              {% else %}
-              <div class="card m-3" style="width: auto; height: auto;">
-                <div class="card-body">
-                  <h2>No need for a pullover!</h2>
-                </div>
-              </div>
-              {% endif %}
-
-            </div>
-            {% endif %}
-
-
-
-
-
-
-          </div>
-        </div>
-
+  <div class="container-fluid justify-content-center d-flex flex-column" style="font-family: cursive;">
+    {% include "umbrella_app/header.html" %}
+    <div class="container justify-content-center d-flex flex-column h-75">
+      {% include "umbrella_app/form.html" %}
+      {% if error %}
+      {% include "umbrella_app/error.html" %}
+      {% endif %}
+      {% if temperature is not None %}
+      <div class="d-flex justify-content-between">
+        {% include "umbrella_app/current.html" %}
+        {% include "umbrella_app/umbrella.html" %}
+        {% include "umbrella_app/pullover.html" %}
       </div>
+      {% endif %}
     </div>
   </div>
-
-
 </body>
 
 </html>
