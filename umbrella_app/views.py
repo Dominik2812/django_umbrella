@@ -1,16 +1,8 @@
-# from django.forms import widgets
-# from django.shortcuts import render
 from django.views.generic import TemplateView, FormView
-
-# from django.views.generic.edit import BaseFormView, TemplateResponseMixin
 from .forms import LocationForm
-
 import requests
 
-# import json
 
-
-# Create your views here.
 class IndexView(TemplateView):
     template_name = "umbrella_app/index.html"
 
@@ -31,17 +23,14 @@ class LocationFormView(FormView):
         ) = self.get_forecast(form)
         context["umbrella_necessary"] = umbrella_necessary
         context["umbrella_days"] = umbrella_days
-
         context["pullover_necessary"] = pullover_necessary
         context["pullover_days"] = pullover_days
         if error == None:
-            # get the forecast  from weatherapi.com and calculate whether an umbrella is necessary
             context["icon"] = current_weather[0]
             context["temperature"] = current_weather[1]
             context["temperature_felt"] = current_weather[2]
         else:
             context["error"] = error
-
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
