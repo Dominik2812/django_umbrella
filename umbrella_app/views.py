@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView, FormView
 from .forms import LocationForm
 import requests
+from .secrete import apiKey  # , DjangoSecreteKey
 
 
 class IndexView(TemplateView):
@@ -44,7 +45,7 @@ class LocationFormView(FormView):
         number_of_days = form.cleaned_data["number_of_days"]
 
         # retrieve weather data from weatherapi.com
-        my_API_key = "191078502d13460888194125212704"
+        my_API_key = apiKey
         url = "http://api.weatherapi.com/v1/forecast.json?key={}&q={}&days={}&aqi=no&alerts=no"
         forecast_response = requests.get(
             url.format(my_API_key, city, number_of_days)
