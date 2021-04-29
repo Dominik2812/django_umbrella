@@ -7,6 +7,16 @@ from .secret import apiKey, googleMapsAPIKey
 class IndexView(TemplateView):
     template_name = "umbrella_app/index.html"
 
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["umbrella_necessary"] = None
+        context["googleMapsAPIKey"] = googleMapsAPIKey
+        return context
+
 
 class LocationFormView(FormView):
     template_name = "umbrella_app/index.html"
@@ -26,8 +36,7 @@ class LocationFormView(FormView):
         context["umbrella_days"] = umbrella_days
         context["pullover_necessary"] = pullover_necessary
         context["pullover_days"] = pullover_days
-        # js_data = simplejson.dumps(googleMapsAPIKey)
-        context["googleMapsAPIKey"] = googleMapsAPIKey
+
         if error == None:
             context["icon"] = current_weather[0]
             context["temperature"] = current_weather[1]
@@ -39,6 +48,7 @@ class LocationFormView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context["umbrella_necessary"] = None
+        context["googleMapsAPIKey"] = googleMapsAPIKey
         return context
 
     def get_forecast(self, form):
