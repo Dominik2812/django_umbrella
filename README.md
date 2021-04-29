@@ -30,17 +30,16 @@ Beautiful form fields are achieved by the class **form-control** which are reali
 ### How to use Google Maps Autocomplete API
 To facilitate your search an autocomplete function is includes via a javascript file in the static/umbrella_app/google_maps.js. The functionality will be described in short in the following, for a more detailed desription please visit https://developers.google.com/maps/documentation/javascript/places-autocomplete and https://developers.google.com/maps/gmp-get-started. 
 
+The *index.html* loads the *"umbrella_app\google_maps.js"* file from the static path. 
+![loadData](pics/loadScript.png?raw=true "loadData")
 
-
-the *index.html* loads the "umbrella_app\google_maps.js" file from the static path. 
-![loadData](pics/loadScriot.png?raw=true "loadData")
-
-In this file are two functions. The **initAutocomplete()** enables the autocomplete mechanism. This function alone will provide you with the suggestions of places while typing. The input field needs to have the id="autocomplete" (see forms.py). A Listerner is added **onPLaceChanged()**  which enables you to choose one of the suggestions by click or enter. 
+In this file are two functions. The **initAutocomplete()** enables the autocomplete mechanism. This function alone will provide you with the suggestions of places while typing. The input field needs to have the id="autocomplete" (see *forms.py*). A Listerner is added **onPLaceChanged()**  which enables you to choose one of the suggestions by click or enter. 
 
 ![loadData](pics/google_maps.png?raw=true "loadData")
-Now to make these functions work, they have to be impoirted. at the end of the *index.html* a script tag is created which downloads the required, realized by the following code: 
+Now to make these functions work, they have to be imported. At the end of the *index.html* a script tag is created which downloads the required, realized by the following code: 
 
 ![loadData](pics/createScriptTag.png?raw=true "loadData")
+
 In this way you don't have to hard code your API key into the script. 
 
 
