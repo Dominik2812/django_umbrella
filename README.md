@@ -1,12 +1,16 @@
 # umbrella
 
 ![loadData](pics/screenshot.png?raw=true "loadData")
+
 ## Abstract
 Some applications do not require stored data from the local database but rather information from either another database (such as an API) or from an internal algorithm. This project demonstrates how the input of a form can be internally processed  without using the local database by means of Django's Class Based Views in combination with a weather API.
 ## What is it about?
 Get a quick answer if an umbrella or a pulloverover is needed for your upcomming trip. Just type in the place where you wanna go and how long you want to stay there. 
 
 ## What you can learn from the code
+### How to hide your sensitive data such as API keys and secrete Django keys
+The App uses the following sensitive keys: API key for the wheatherdata, DjangoSecreteKey and the GoogleMaps API key. Those are stored in secret.py on my local desk and loaded into my pythonfiles. In my .gitignore secret.py is included; in this way I can comfotably run my code at home and in the same time update teh code on github without exposing my keys. To run the code create your own secret.py under "umbrella_app". 
+
 ### How Class Based Views (CBVs) are used without saving an instance to the database by **FormViews**. 
 In *views.py* the class **LocationFormView** derives from the class **FormView**. The **FormView** class is crucial as it does not create or manipulate an object in the local data base. Upon its initial call it creates an empty form object on the base of the class defined in *forms.py*. As a result your browser shows an empty form. If however post requests are send, the form object contains the data that was typed in by the user. This data can then be processed, as described in the following section.  
 
@@ -16,10 +20,28 @@ Upon a post request the following procedure is triggered in the *views.py* file.
 ![loadData](pics/dataflow.png?raw=true "loadData")
 #### Basic Data Path
 
-
 ### How to use Bootstrap
 The positioning of the elements is managed by bootstrap flex. 
 By using the class **container-fluid**, the *header.html* reaches across the entire viewport while the class **container** confines the residual elements in a more narrow column of the viewport. The **justify-content-center** class  causes child elements to be horizontally centeres. The *header.html* and  *form.html* are placed on top of each other whereas *current.html*, *umbrella.html* and *pullover.html* are placed next to eachother. The former constellation is reached by assigning the **d-flex flex-column** class to the mother element. The side by side placement is reached by simply using **d-flex** in the mother element. With **justify-content between**, the elements contained will be homogeneously distributed. 
 Beautiful form fields are achieved by the class **form-control** which are realized by widgets in the *forms.py*. 
 
 ![loadData](pics/BootstrapPosition.png?raw=true "loadData")
+
+### How to use Google Maps Autocomplete API
+To facilitate your search an autocomplete function is includes via a javascript file in the static/umbrella_app/google_maps.js. The functionality will be described in short in the following, for a more detailed desription please visit https://developers.google.com/maps/documentation/javascript/places-autocomplete and https://developers.google.com/maps/gmp-get-started. 
+
+
+
+the *index.html* loads the "umbrella_app\google_maps.js" file from the static path. 
+![loadData](pics/loadScriot.png?raw=true "loadData")
+
+In this file are two functions. The **initAutocomplete()** enables the autocomplete mechanism. This function alone will provide you with the suggestions of places while typing. The input field needs to have the id="autocomplete" (see forms.py). A Listerner is added **onPLaceChanged()**  which enables you to choose one of the suggestions by click or enter. 
+
+![loadData](pics/google_maps.png?raw=true "loadData")
+Now to make these functions work, they have to be impoirted. at the end of the *index.html* a script tag is created which downloads the required, realized by the following code: 
+
+![loadData](pics/createScriptTag.png?raw=true "loadData")
+In this way you don't have to hard code your API key into the script. 
+
+
+
