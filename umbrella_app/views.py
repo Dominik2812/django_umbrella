@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView, FormView
 from .forms import LocationForm
 import requests
-from .secret import apiKey  # , DjangoSecreteKey
+from .secret import apiKey, googleMapsAPIKey
 
 
 class IndexView(TemplateView):
@@ -26,6 +26,8 @@ class LocationFormView(FormView):
         context["umbrella_days"] = umbrella_days
         context["pullover_necessary"] = pullover_necessary
         context["pullover_days"] = pullover_days
+        # js_data = simplejson.dumps(googleMapsAPIKey)
+        context["googleMapsAPIKey"] = googleMapsAPIKey
         if error == None:
             context["icon"] = current_weather[0]
             context["temperature"] = current_weather[1]
