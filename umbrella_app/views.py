@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView, FormView
 from .forms import LocationForm
 import requests
-from .secret import apiKey, googleMapsAPIKey
+from .secret import api_key, google_maps_key
 
 
 class IndexView(TemplateView):
@@ -14,7 +14,7 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context["umbrella_necessary"] = None
-        context["googleMapsAPIKey"] = googleMapsAPIKey
+        context["googleMapsAPIKey"] = google_maps_key
         return context
 
 
@@ -48,7 +48,7 @@ class LocationFormView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context["umbrella_necessary"] = None
-        context["googleMapsAPIKey"] = googleMapsAPIKey
+        context["google_maps_key"] = google_maps_key
         return context
 
     def get_forecast(self, form):
@@ -57,10 +57,9 @@ class LocationFormView(FormView):
         number_of_days = form.cleaned_data["number_of_days"]
 
         # retrieve weather data from weatherapi.com
-        my_API_key = apiKey
         url = "http://api.weatherapi.com/v1/forecast.json?key={}&q={}&days={}&aqi=no&alerts=no"
         forecast_response = requests.get(
-            url.format(my_API_key, city, number_of_days)
+            url.format(api_key, city, number_of_days)
         ).json()
 
         # select desired information
