@@ -24,25 +24,31 @@ class LocationFormView(FormView):
 
     def form_valid(self, form):
         context = self.get_context_data()
+        # (
+        #     error,
+        #     umbrella_necessary,
+        #     umbrella_days,
+        #     pullover_necessary,
+        #     pullover_days,
+        #     current_weather,
+        # ) = self.get_forecast(form)
+
         (
-            error,
             umbrella_necessary,
             umbrella_days,
             pullover_necessary,
             pullover_days,
-            current_weather,
-        ) = self.get_forecast(form)
+            current_weather
+        ) = form.cleaned_data['forecast']
+        
         context["umbrella_necessary"] = umbrella_necessary
         context["umbrella_days"] = umbrella_days
         context["pullover_necessary"] = pullover_necessary
         context["pullover_days"] = pullover_days
+        context["icon"] = current_weather[0]
+        context["temperature"] = current_weather[1]
+        context["temperature_felt"] = current_weather[2]
 
-        if error == None:
-            context["icon"] = current_weather[0]
-            context["temperature"] = current_weather[1]
-            context["temperature_felt"] = current_weather[2]
-        else:
-            context["error"] = error
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
@@ -51,65 +57,65 @@ class LocationFormView(FormView):
         context["google_maps_key"] = google_maps_key
         return context
 
-    def get_forecast(self, form):
-        # retrieve data from the form
-        city = form.cleaned_data["where_you_wanna_go"]
-        number_of_days = form.cleaned_data["number_of_days"]
+    # def get_forecast(self, form):
+    #     # retrieve data from the form
+    #     city = form.cleaned_data["where_you_wanna_go"]
+    #     number_of_days = form.cleaned_data["number_of_days"]
 
-        # retrieve weather data from weatherapi.com
-        url = "http://api.weatherapi.com/v1/forecast.json?key={}&q={}&days={}&aqi=no&alerts=no"
-        forecast_response = requests.get(
-            url.format(api_key, city, number_of_days)
-        ).json()
+    #     # retrieve weather data from weatherapi.com
+    #     url = "http://api.weatherapi.com/v1/forecast.json?key={}&q={}&days={}&aqi=no&alerts=no"
+    #     forecast_response = requests.get(
+    #         url.format(api_key, city, number_of_days)
+    #     ).json()
 
-        # select desired information
-        if "error" not in forecast_response.keys():
-            error = None
-            current_weather = forecast_response["current"]
-            current_weather = [
-                current_weather["condition"]["icon"],
-                int(current_weather["temp_c"]),
-                int(current_weather["feelslike_c"]),
-            ]
+    #     # select desired information
+    #     if "error" not in forecast_response.keys():
+    #         error = None
+    #         current_weather = forecast_response["current"]
+    #         current_weather = [
+    #             current_weather["condition"]["icon"],
+    #             int(current_weather["temp_c"]),
+    #             int(current_weather["feelslike_c"]),
+    #         ]
 
-            days = forecast_response["forecast"]["forecastday"]
+    #         days = forecast_response["forecast"]["forecastday"]
 
-            umbrella_necessary = False
-            umbrella_days = []
-            pullover_necessary = False
-            pullover_days = []
-            for day in days:
-                if int(day["day"]["daily_chance_of_rain"]) > 50:
-                    umbrella_necessary = True
-                    umbrella_days.append(
-                        (
-                            day["date"],
-                            int(
-                                day["day"]["daily_chance_of_rain"],
-                            ),
-                        )
-                    )
-                if int(day["day"]["mintemp_c"]) < 15:
-                    pullover_necessary = True
-                    pullover_days.append(
-                        (
-                            day["date"],
-                            int(
-                                day["day"]["mintemp_c"],
-                            ),
-                        )
-                    )
-            return (
-                error,
-                umbrella_necessary,
-                umbrella_days,
-                pullover_necessary,
-                pullover_days,
-                current_weather,
-            )
-        else:
-            error = forecast_response["error"]
-            return error, None, None, None, None, None
+    #         umbrella_necessary = False
+    #         umbrella_days = []
+    #         pullover_necessary = False
+    #         pullover_days = []
+    #         for day in days:
+    #             if int(day["day"]["daily_chance_of_rain"]) > 50:
+    #                 umbrella_necessary = True
+    #                 umbrella_days.append(
+    #                     (
+    #                         day["date"],
+    #                         int(
+    #                             day["day"]["daily_chance_of_rain"],
+    #                         ),
+    #                     )
+    #                 )
+    #             if int(day["day"]["mintemp_c"]) < 15:
+    #                 pullover_necessary = True
+    #                 pullover_days.append(
+    #                     (
+    #                         day["date"],
+    #                         int(
+    #                             day["day"]["mintemp_c"],
+    #                         ),
+    #                     )
+    #                 )
+    #         return (
+    #             error,
+    #             umbrella_necessary,
+    #             umbrella_days,
+    #             pullover_necessary,
+    #             pullover_days,
+    #             current_weather,
+    #         )
+    #     else:
+    #         error = forecast_response["error"]
+    #         return error, None, None, None, None, None
 
 
 #####################################################################################

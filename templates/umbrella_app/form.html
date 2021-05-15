@@ -2,11 +2,14 @@
     <div class="card-body">
         <form method="POST">
             {% csrf_token %}
+            {{ form.non_field_errors }}
             <div class="m-3">
                 {{ form.where_you_wanna_go }}
+                {{ form.where_you_wanna_go.errors }}
             </div>
             <div class="m-3 ">
                 {{ form.number_of_days }}
+                {{ form.number_of_days.errors }}
             </div>
             <button type="submit" class="btn btn-primary m-3 p-3">
                 get the answer
