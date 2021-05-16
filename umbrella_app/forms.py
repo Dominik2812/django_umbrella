@@ -54,11 +54,12 @@ class LocationForm(forms.Form):
         return cleaned_data
 
     def get_forecast(self, city, number_of_days):
-        # retrieve weather data from weatherapi.com
-        url = "http://api.weatherapi.com/v1/forecast.json?key={}&q={}&days={}&aqi=no&alerts=no"
-        forecast_response = requests.get(
-            url.format(api_key, city, number_of_days)
-        ).json()
+        url = f"http://api.weatherapi.com/v1/forecast.json?key={api_key}&q={city}&days={number_of_days}&aqi=no&alerts=no"
+        forecast_response = requests.get(url).json()
+        # url = "http://api.weatherapi.com/v1/forecast.json?key={}&q={}&days={}&aqi=no&alerts=no"
+        # forecast_response = requests.get(
+        #     url.format(api_key, city, number_of_days)
+        # ).json()
 
         # select desired information
         if "error" in forecast_response:
