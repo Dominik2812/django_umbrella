@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-
+#tRY eXCEPT
 from umbrella_app.secret import django_secrete_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

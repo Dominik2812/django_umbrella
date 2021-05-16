@@ -3,7 +3,7 @@ let autocomplete;
 function initAutocomplete() {
     autocomplete = new google.maps.places.Autocomplete(
     document.getElementById('autocomplete'), {
-        types: ['establishment'],
+        // types: [ '(cities)'], //'establishment',
         fields: ['place_id', 'geometry', 'name']
     });
     autocomplete.addListener('place_changed', onPlaceChanged);

@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView, FormView
-from .forms import LocationForm
+from umbrella_app.forms import LocationForm
 import requests
 from .secret import api_key, google_maps_key
 
@@ -33,21 +33,15 @@ class LocationFormView(FormView):
         #     current_weather,
         # ) = self.get_forecast(form)
 
-        (
-            umbrella_necessary,
-            umbrella_days,
-            pullover_necessary,
-            pullover_days,
-            current_weather
-        ) = form.cleaned_data['forecast']
+        forecast = form.cleaned_data['forecast']
         
-        context["umbrella_necessary"] = umbrella_necessary
-        context["umbrella_days"] = umbrella_days
-        context["pullover_necessary"] = pullover_necessary
-        context["pullover_days"] = pullover_days
-        context["icon"] = current_weather[0]
-        context["temperature"] = current_weather[1]
-        context["temperature_felt"] = current_weather[2]
+        context["umbrella_necessary"] = forecast.umbrella_necessary
+        context["umbrella_days"] = forecast.umbrella_days
+        context["pullover_necessary"] = forecast.pullover_necessary
+        context["pullover_days"] = forecast.pullover_days
+        context["icon"] = forecast.current_weather[0]
+        context["temperature"] = forecast.current_weather[1]
+        context["temperature_felt"] = forecast.current_weather[2]
 
         return self.render_to_response(context)
 
