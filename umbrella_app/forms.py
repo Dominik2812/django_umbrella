@@ -1,7 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 import requests
-from .secret import api_key
+from umbrella.settings import api_key
+
 from dataclasses import dataclass
 
 
@@ -43,11 +44,10 @@ class LocationForm(forms.Form):
 
         city = cleaned_data.get("where_you_wanna_go")
         number_of_days = cleaned_data.get("number_of_days")
-        # print(self.get_forecast(city, number_of_days))
+
         try:
             forecast = self.get_forecast(city, number_of_days)
         except ForecastAPIError as e:
-            # self.add_error("where_you_wanna_go", error["message"])
             raise ValidationError({"where_you_wanna_go": str(e)})
 
         cleaned_data["forecast"] = forecast
@@ -56,12 +56,8 @@ class LocationForm(forms.Form):
     def get_forecast(self, city, number_of_days):
         url = f"http://api.weatherapi.com/v1/forecast.json?key={api_key}&q={city}&days={number_of_days}&aqi=no&alerts=no"
         forecast_response = requests.get(url).json()
-        # url = "http://api.weatherapi.com/v1/forecast.json?key={}&q={}&days={}&aqi=no&alerts=no"
-        # forecast_response = requests.get(
-        #     url.format(api_key, city, number_of_days)
-        # ).json()
 
-        # select desired information
+        # select desired information, remember to return error early
         if "error" in forecast_response:
             raise ForecastAPIError(forecast_response["error"]["message"])
 
