@@ -3,7 +3,7 @@
 ![loadData](pics/screenshot.png?raw=true "loadData")
 
 ## Abstract
-Some applications do not require stored data from the local database but rather information from either another database (such as an API) or from an internal algorithm. This project demonstrates how the input of a form can be internally processed without using the local database utilizing Django's Class-Based Views in combination with a weather API.
+Some applications do not require stored data from the local database but rather information from either another database (such as an API) or from an internal algorithm. This project demonstrates how the input of a form can be internally processed without using the local database utilizing Django's **Class-Based Views** in combination with a **weather API** and **Google AutoComplete**.
 ## What is it about?
 Get a quick answer if an umbrella or a pullover is needed for your upcoming trip. Just type in the place where you wanna go and how long you want to stay there. 
 
